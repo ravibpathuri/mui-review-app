@@ -1,10 +1,11 @@
-import { Button, LinearProgress, Stack, Table } from "@mui/material";
 import React from "react";
-import { Link, useSearchParams } from "react-router-dom";
-import axiosWebClient from "../../services/axiosWebClient";
-import IUser from "./types";
+import { Box, Button, LinearProgress, Stack, Table } from "@mui/material";
+import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../redux";
-import { setUsers } from "./User.slice";
+import axiosWebClient from "../../services/axiosWebClient";
+import { clearUsers, setUsers } from "./User.slice";
+import IUser from "./types";
 
 const Users = () => {
   let [searchParams, setSearchParams] = useSearchParams();
@@ -12,8 +13,9 @@ const Users = () => {
 
   const { users } = useAppSelector((state) => state.user);
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
-  const getData = () => {
+  const getData = React.useCallback(() => {
     setLoading(true);
     axiosWebClient
       .get("users")
@@ -21,24 +23,47 @@ const Users = () => {
         dispatch(setUsers(response.data));
       })
       .finally(() => setLoading(false));
-  };
+  }, [dispatch]);
 
   React.useEffect(() => {
-    getData();
-  }, []);
+    if (users?.length === 0) getData();
+  }, [getData]);
 
   if (loading) {
     return <LinearProgress />;
   }
 
+  const columns: GridColDef[] = [
+    { field: "name", headerName: "Name", width: 250 },
+    { field: "email", headerName: "E-Mail", width: 250 },
+    {
+      field: "action",
+      headerName: "Action",
+      width: 150,
+      renderCell: (params) => <Link to={`/user/${params.row.id}`}>View</Link>,
+    },
+  ];
+
   return (
     <Stack>
       Users : {searchParams.get("active")}
-      <Button onClick={() => setSearchParams({ active: "true" })}>
+      <Button
+        variant="contained"
+        onClick={() => setSearchParams({ active: "true" })}
+      >
         Show Active Users
       </Button>
-      <Button onClick={() => setSearchParams({ active: "false" })}>
+      <Button
+        variant="contained"
+        onClick={() => setSearchParams({ active: "false" })}
+      >
         Hide All Users
+      </Button>
+      <Button variant="contained" onClick={() => navigate("/user/new")}>
+        Add User
+      </Button>
+      <Button variant="contained" onClick={() => dispatch(clearUsers())}>
+        Clear Users
       </Button>
       <Table>
         <tbody>
@@ -60,6 +85,22 @@ const Users = () => {
           })}
         </tbody>
       </Table>
+      <Box>
+        <DataGrid
+          rows={users || []}
+          columns={columns}
+          initialState={{
+            pagination: {
+              paginationModel: {
+                pageSize: 5,
+              },
+            },
+          }}
+          pageSizeOptions={[5, 10, 20, 50, 100]}
+          checkboxSelection={true}
+          disableRowSelectionOnClick={false}
+        />
+      </Box>
     </Stack>
   );
 };

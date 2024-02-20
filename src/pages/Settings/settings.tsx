@@ -10,6 +10,7 @@ import {
   TableCell,
   TableBody,
   Stack,
+  Box,
 } from "@mui/material";
 import { useAppSelector } from "../../redux";
 import { Link } from "react-router-dom";
@@ -18,7 +19,7 @@ const Settings = () => {
   const context = useUserSettingsContext();
   const { users } = useAppSelector((state) => state.user);
   return (
-    <Stack>
+    <Box>
       settings : {context.userSettings.theme}
       <Button
         variant="contained"
@@ -27,7 +28,7 @@ const Settings = () => {
         Set Dark Theme
       </Button>
       <Button
-        variant="contained"
+        variant="outlined"
         onClick={() => context?.setUserSettings({ theme: "light" })}
       >
         Set Light Theme
@@ -62,7 +63,7 @@ const Settings = () => {
           </TableBody>
         </Table>
       </TableContainer>
-    </Stack>
+    </Box>
   );
 };
 

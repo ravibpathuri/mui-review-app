@@ -13,12 +13,15 @@ import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
 import { useNavigate } from "react-router-dom";
+import { ShoppingCart } from "@mui/icons-material";
+import { Badge } from "@mui/material";
+import { useAppSelector } from "../redux";
 
 const pages = ["Products", "Pricing", "Blog"];
-const settings = ["Profile", "Account", "Dashboard", "Logout"];
 
 function ResponsiveAppBar() {
   const navigate = useNavigate();
+  const { products } = useAppSelector((state) => state.cart);
 
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
     null
@@ -45,6 +48,10 @@ function ResponsiveAppBar() {
   const handleSettings = () => {
     setAnchorElUser(null);
     navigate("/settings");
+  };
+
+  const handleProducts = () => {
+    navigate("/products");
   };
 
   return (
@@ -100,7 +107,7 @@ function ResponsiveAppBar() {
               }}
             >
               {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
+                <MenuItem key={page} onClick={handleProducts}>
                   <Typography textAlign="center">{page}</Typography>
                 </MenuItem>
               ))}
@@ -138,6 +145,15 @@ function ResponsiveAppBar() {
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>
+            <Tooltip title="Open Cart">
+              <Badge
+                badgeContent={products?.length || 0}
+                color="secondary"
+                sx={{ mr: 5 }}
+              >
+                <ShoppingCart color="action" />
+              </Badge>
+            </Tooltip>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                 <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
@@ -159,11 +175,18 @@ function ResponsiveAppBar() {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleSettings}>
-                  <Typography textAlign="center">{setting}</Typography>
-                </MenuItem>
-              ))}
+              <MenuItem onClick={handleSettings}>
+                <Typography textAlign="center">Profile</Typography>
+              </MenuItem>
+              <MenuItem onClick={handleSettings}>
+                <Typography textAlign="center">Account</Typography>
+              </MenuItem>
+              <MenuItem onClick={handleSettings}>
+                <Typography textAlign="center">Settings</Typography>
+              </MenuItem>
+              <MenuItem onClick={handleSettings}>
+                <Typography textAlign="center">Logout</Typography>
+              </MenuItem>
             </Menu>
           </Box>
         </Toolbar>

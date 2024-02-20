@@ -5,10 +5,12 @@ import IUser from "./types";
 // Define a type for the slice state
 export type UserState = {
   users: IUser[] | undefined;
+  test: string;
 };
 
 const initialState: UserState = {
   users: [],
+  test: "",
 };
 
 const userSlice = createSlice({
@@ -18,9 +20,14 @@ const userSlice = createSlice({
     setUsers: (state, action: PayloadAction<IUser[]>) => {
       state.users = action.payload;
     },
+    clearUsers: (state) => {
+      console.log("we are here to clear users");
+      state.users = [];
+      state.test = "cleard";
+    },
   },
 });
 
-export const { setUsers } = userSlice.actions;
+export const { setUsers, clearUsers } = userSlice.actions;
 
 export default userSlice.reducer;

@@ -11,9 +11,11 @@ const Welcome = lazy(() => import("./pages/Welcome/Welcome"));
 const Game = lazy(() => import("./pages/Game/Game"));
 const Layout = lazy(() => import("./layout/Layout"));
 const UserDetails = lazy(() => import("./pages/User/UserDetails"));
+const UserEdit = lazy(() => import("./pages/User/UserEdit"));
 const Users = lazy(() => import("./pages/User/Users"));
 const Team = lazy(() => import("./pages/User/Team"));
 const Settings = lazy(() => import("./pages/Settings/settings"));
+const Proudcts = lazy(() => import("./pages/Product/Proudcts"));
 
 const PrivateRoutes = () => {
   let signedIn = true;
@@ -39,6 +41,10 @@ const router = createBrowserRouter([
       { path: "game", element: <Game /> },
       { path: "users", element: <Users /> },
       {
+        path: "user/edit",
+        element: <UserEdit />,
+      },
+      {
         path: "user/:id",
         element: <UserDetails />,
       },
@@ -49,6 +55,10 @@ const router = createBrowserRouter([
       {
         path: "settings",
         element: <Settings />,
+      },
+      {
+        path: "products",
+        element: <Proudcts />,
       },
     ],
   },
